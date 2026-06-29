@@ -23,9 +23,13 @@
         width: 180px;
     }
 
+    /* ⭐ Make nav NOT full width */
     nav {
         background: rgba(0, 12, 37, 0.9);
         padding: 10px;
+        display: inline-block;
+        border-radius: 10px;
+        margin-top: 10px;
     }
 
     nav a {
@@ -39,7 +43,7 @@
         color: #DE2354;
     }
 
-    /* ⭐ THIS is the fix — smaller centered box so background shows */
+    /* ⭐ Make section NOT full width so mountains show */
     .section {
         padding: 20px;
         margin: 40px auto;
@@ -47,6 +51,7 @@
         max-width: 700px;
         border-radius: 12px;
         text-align: center;
+        display: inline-block;
     }
 
     form {
@@ -60,7 +65,7 @@
         width: 100%;
         max-width: 400px;
         padding: 10px;
-        border: 2px solid #DE2354; /* red border instead of blue */
+        border: 2px solid #DE2354; /* red border */
         background: rgba(0, 12, 37, 0.85); /* dark background */
         color: #B6CFDE;
         border-radius: 4px;
