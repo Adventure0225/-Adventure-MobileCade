@@ -3,44 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <title>Contact Adventure MobileCade</title>
+
 <style>
     body {
-        background: #000C25;
-        color: #B6CFDE;
+        background: #000C25;        /* Dark outline */
+        color: #B6CFDE;             /* Light accent */
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
     }
+
     header {
         text-align: center;
         padding: 20px;
     }
+
     .logo {
         width: 180px;
     }
+
     nav {
         text-align: center;
         background: #000C25;
         padding: 10px;
     }
+
     nav a {
-        color: #DE2354;
+        color: #DE2354;             /* Main red */
         margin: 0 15px;
         text-decoration: none;
         font-size: 18px;
     }
-    h1 {
-        color: #DE2354;
+
+    h1, h2 {
+        color: #DE2354;             /* Main red */
         text-align: center;
     }
+
     .section {
         padding: 20px;
         margin: 20px;
         background: #000C25;
-        border-left: 4px solid #1C80DA;
+        border-left: 4px solid #1C80DA;   /* Highlight blue */
+    }
+
+    a {
+        color: #1C80DA;             /* Highlight blue */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        border: 2px solid #1C80DA;
+        background: #000C25;
+        color: #B6CFDE;
+        border-radius: 4px;
+    }
+
+    input[type="submit"] {
+        background: #DE2354;
+        color: #000C25;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+        background: #1C80DA;
+        color: #000C25;
     }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -54,13 +93,30 @@
     <a href="contact.html">Contact</a>
 </nav>
 
-<h1>Contact Us</h1>
-
 <div class="section">
+    <h1>Contact Adventure MobileCade</h1>
+    <p>Have a question or want to book an event? We’d love to hear from you. Use the form below or reach out directly.</p>
+
+    <h2>Booking & Inquiries</h2>
     <p>Email: adventuremobilecade@gmail.com</p>
+    <p>Location: Platte City, Missouri — serving the entire KC metro area.</p>
+
+    <h2>Contact Form</h2>
+    <form>
+      <label for="name">Name:</label><br>
+      <input type="text" id="name" name="name"><br><br>
+
+      <label for="email">Email:</label><br>
+      <input type="email" id="email" name="email"><br><br>
+
+      <label for="message">Message:</label><br>
+      <textarea id="message" name="message" rows="5"></textarea><br><br>
+
+      <input type="submit" value="Send">
+    </form>
+
+    <p>We typically respond within 24–48 hours.</p>
 </div>
 
 </body>
 </html>
-
-        font
