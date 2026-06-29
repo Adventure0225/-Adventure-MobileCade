@@ -38,7 +38,6 @@
         color: #DE2354;
     }
 
-    /* ⭐ No blue line, centered content */
     .section {
         padding: 20px;
         margin: 20px auto;
@@ -47,18 +46,13 @@
         text-align: center;
     }
 
-    form {
-        text-align: center;
-    }
-
-    /* ⭐ Keep your dark theme, no white boxes */
     input[type="text"],
     input[type="email"],
     textarea {
         width: 100%;
         max-width: 400px;
         padding: 10px;
-        border: 2px solid #DE2354; /* red border */
+        border: 2px solid #DE2354;
         background: #000C25;
         color: #B6CFDE;
         border-radius: 4px;
@@ -102,23 +96,37 @@
 
 <div class="section">
     <h1>Contact Adventure MobileCade</h1>
-    <p>Have a question or want to book an event? We’d love to hear from you. Use the form below or reach out directly.</p>
+    <p>Have a question or want to book an event? We’d love to hear from you.</p>
 
     <h2>Booking & Inquiries</h2>
     <p>Email: adventuremobilecade@gmail.com</p>
     <p>Phone: <a href="tel:8167722362">(816) 772-2362</a></p>
-    <p>Location: Platte City, Missouri — serving the entire KC metro area.</p>
+    <p>Location: Platte City, Missouri — serving the KC metro.</p>
 
     <h2>Contact Form</h2>
-    <form>
+
+    <!-- ⭐ WORKING FORM USING FORMSUBMIT -->
+    <form action="https://formsubmit.co/adventuremobilecade@gmail.com" method="POST">
+
+      <!-- Required hidden fields -->
+      <input type="hidden" name="_subject" value="New Contact Form Submission!">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+
+      <!-- Optional redirect after submit -->
+      <input type="hidden" name="_next" value="https://yourwebsite.com/thankyou.html">
+
+      <!-- Spam protection -->
+      <input type="text" name="_honey" style="display:none">
+
       <label for="name">Name:</label><br>
-      <input type="text" id="name" name="name"><br><br>
+      <input type="text" id="name" name="name" required><br><br>
 
       <label for="email">Email:</label><br>
-      <input type="email" id="email" name="email"><br><br>
+      <input type="email" id="email" name="email" required><br><br>
 
       <label for="message">Message:</label><br>
-      <textarea id="message" name="message" rows="5"></textarea><br><br>
+      <textarea id="message" name="message" rows="5" required></textarea><br><br>
 
       <input type="submit" value="Send">
     </form>
@@ -128,5 +136,3 @@
 
 </body>
 </html>
-
-
