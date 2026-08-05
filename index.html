@@ -1,111 +1,1140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Adventure MobileCade</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure MobileCade | Decades of Gaming! One Epic Adventure!</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600&family=Teko:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --navy-dark: #0A1329;
+            --navy-light: #152243;
+            --orange-primary: #E2822A;
+            --orange-hover: #c96e1b;
+            --red-accent: #DC3545;
+            --blue-accent: #1E88E5;
+            --text-dark: #1E293B;
+            --text-light: #F8FAFC;
+            --bg-light: #F1F5F9;
+            --card-bg: #FFFFFF;
+        }
 
-<style>
-    body {
-        background: #000C25;
-        color: #B6CFDE;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        text-align: center;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    header {
-        padding: 20px;
-    }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+        }
 
-    .logo {
-        width: 180px;
-    }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Teko', 'Montserrat', Impact, sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-    nav {
-        background: #000C25;
-        padding: 10px;
-    }
+        /* --- PREVIEW BANNER --- */
+        #previewBanner {
+            display: none;
+            background-color: var(--orange-primary);
+            color: #fff;
+            text-align: center;
+            padding: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-    nav a {
-        color: #DE2354;
-        margin: 0 15px;
-        text-decoration: none;
-        font-size: 18px;
-    }
+        /* --- NAVIGATION HEADER --- */
+        header {
+            background-color: var(--navy-dark);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--orange-primary);
+            width: 100%;
+        }
 
-    h1, h2 {
-        color: #DE2354;
-        margin-top: 10px;
-        font-size: 42px;
-        font-weight: bold;
-    }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            min-height: 70px;
+        }
 
-    .section {
-        padding: 20px;
-        margin: 20px auto;
-        background: #000C25;
-        max-width: 800px;
-        text-align: center;
-    }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-light);
+            cursor: pointer;
+        }
 
-    ul {
-        list-style-position: inside;
-        padding: 0;
-    }
+        .logo-nav-img {
+            height: 50px;
+            max-width: 150px;
+            width: auto;
+            border-radius: 6px;
+            object-fit: contain;
+            display: block;
+        }
 
-    a {
-        color: #1C80DA;
-    }
-</style>
+        .brand-name {
+            font-family: 'Teko', 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 1.5px;
+            line-height: 1;
+            color: #fff;
+        }
+
+        .brand-name span {
+            color: var(--orange-primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--orange-primary);
+        }
+
+        .btn-cta {
+            background-color: var(--orange-primary);
+            color: #fff !important;
+            padding: 0.5rem 0.9rem;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-cta:hover {
+            background-color: var(--orange-hover);
+        }
+
+        .btn-admin {
+            background-color: var(--blue-accent);
+            color: #fff !important;
+        }
+
+        .btn-preview {
+            background-color: #475569;
+            color: #fff !important;
+        }
+
+        /* --- PAGE ROUTING SYSTEM --- */
+        .page-section {
+            display: none;
+            min-height: 80vh;
+            padding: 2.5rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            clear: both;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-light) 100%);
+            color: white;
+            text-align: center;
+            padding: 3.5rem 1.5rem;
+            border-radius: 16px;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-logo-focused {
+            max-width: 260px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            filter: drop-shadow(0 6px 15px rgba(0,0,0,0.6));
+            border-radius: 12px;
+            object-fit: contain;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            color: #fff;
+            margin-top: 0.5rem;
+            margin-bottom: 0.2rem;
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+
+        .hero h2.tagline {
+            color: var(--orange-primary);
+            font-size: 1.6rem;
+            margin-bottom: 1.2rem;
+            letter-spacing: 0.8px;
+        }
+
+        .hero p {
+            max-width: 700px;
+            margin: 0 auto 1.5rem auto;
+            font-size: 1.05rem;
+            color: #CBD5E1;
+            font-family: 'Open Sans', sans-serif;
+            text-transform: none;
+        }
+
+        .tag-pills {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .pill {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--blue-accent);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- GRID & CARDS --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--orange-primary);
+            position: relative;
+        }
+
+        .card h3 {
+            color: var(--navy-dark);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card ul {
+            list-style-type: none;
+        }
+
+        .card ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- VIDEO GALLERY CARDS --- */
+        .video-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #E2E8F0;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            background-color: #000;
+        }
+
+        .video-wrapper iframe, .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            padding: 1rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+
+        .video-title {
+            font-weight: 700;
+            color: var(--navy-dark);
+            font-size: 1rem;
+        }
+
+        .delete-btn-video {
+            background-color: var(--red-accent);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .delete-btn-video:hover {
+            background-color: #bd2130;
+        }
+
+        /* --- GAME MENU --- */
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 1.05rem;
+            border: 2px solid #CBD5E1;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--orange-primary);
+        }
+
+        .console-group {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border-left: 5px solid var(--navy-dark);
+        }
+
+        .console-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            color: var(--navy-dark);
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 8px;
+            margin-bottom: 1rem;
+            font-family: 'Teko', 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .game-list-ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 8px 15px;
+            list-style-type: none;
+        }
+
+        .game-list-ul li {
+            font-size: 0.92rem;
+            padding: 6px 10px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f8fafc;
+            border-radius: 4px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .delete-btn {
+            color: var(--red-accent);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0 6px;
+            border: none;
+            background: transparent;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.3);
+        }
+
+        body.is-preview .admin-only {
+            display: none !important;
+        }
+
+        /* --- ADMIN PANEL --- */
+        .admin-box {
+            background: #fff;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            border-top: 4px solid var(--blue-accent);
+        }
+
+        .admin-box label {
+            display: block;
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .admin-box input, .admin-box select, .admin-box textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+        }
+
+        /* --- CONTACT FORM --- */
+        .contact-form label {
+            display: block;
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-form input, .contact-form textarea, .contact-form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+        }
+
+        .contact-info-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .contact-info-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .contact-info-list i {
+            font-size: 1.3rem;
+            color: var(--orange-primary);
+            width: 25px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--navy-dark);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            margin-top: 4rem;
+            border-top: 3px solid var(--orange-primary);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--orange-primary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 1rem; }
+            nav ul { flex-wrap: wrap; justify-content: center; gap: 0.8rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero h2.tagline { font-size: 1.3rem; }
+            .hero-logo-focused { max-width: 190px; }
+            .game-list-ul { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-    <img src="logo.jpg" class="logo" alt="Adventure MobileCade Logo">
-</header>
+    <!-- PREVIEW BANNER -->
+    <div id="previewBanner">
+        👁️ CUSTOMER PREVIEW MODE ACTIVE — <a onclick="togglePreview()" style="color: #fff; text-decoration: underline; cursor: pointer;">Click here to exit preview mode</a>
+    </div>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="events.html">Events</a>
-    <a href="announcements.html">Announcements</a>
-    <a href="contact.html">Contact</a>
-</nav>
+    <!-- HEADER / NAVIGATION -->
+    <header>
+        <div class="nav-container">
+            <a onclick="showPage('home')" class="logo-area">
+                <img id="navLogo" src="AdventureMobileCadeLogoFinalMaster.jpg" alt="Adventure MobileCade Logo" class="logo-nav-img" onerror="handleImageError(this)">
+                <div class="brand-name">ADVENTURE <span>MOBILECADE</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a onclick="showPage('home')" id="nav-home" class="active">Main</a></li>
+                    <li><a onclick="showPage('events')" id="nav-events">Events</a></li>
+                    <li><a onclick="showPage('gamemenu')" id="nav-gamemenu">Game Menu</a></li>
+                    <li><a onclick="showPage('videos')" id="nav-videos">Videos</a></li>
+                    <li><a onclick="showPage('about')" id="nav-about">About</a></li>
+                    <li class="admin-only"><a onclick="showPage('manage')" id="nav-manage" class="btn-cta btn-admin"><i class="fa-solid fa-gear"></i> Edit Site</a></li>
+                    <li><a onclick="togglePreview()" id="btnPreviewToggle" class="btn-cta btn-preview"><i class="fa-solid fa-eye"></i> Preview Mode</a></li>
+                    <li><a onclick="showPage('contact')" id="nav-contact" class="btn-cta">Book Now</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<div class="section">
-    <div class="section">
-    <h1>Adventure MobileCade</h1>
-    <p>Welcome to Adventure MobileCade — Platte City’s mobile retro gaming experience built for parties, festivals, community events, and apartment activations.</p>
+    <!-- MAIN PAGE -->
+    <section id="home" class="page-section active">
+        <div class="hero">
+            <img id="heroLogo" src="AdventureMobileCadeLogoFinalMaster.jpg" alt="Adventure MobileCade Logo" class="hero-logo-focused" onerror="handleImageError(this)">
+            
+            <h1 id="dynHeroTitle">Mobile Gaming For Any Event</h1>
+            <h2 id="dynHeroTagline" class="tagline">Decades of Gaming! One Epic Adventure!</h2>
+            <p id="dynHeroDesc">Retro classics, modern multiplayer, and clean plug-and-play fun that turns any space into an instant attraction!</p>
+            
+            <div class="tag-pills">
+                <span class="pill">RETRO</span>
+                <span class="pill">MODERN</span>
+                <span class="pill">MOBILE</span>
+                <span class="pill">FAMILY-FRIENDLY</span>
+            </div>
+            
+            <button onclick="showPage('contact')" class="btn-cta" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Book Your Event Today!</button>
+        </div>
 
-    <h2>Play Anywhere</h2>
-    <p>Our mobile gaming stations are designed for fast setup, zero venue staff involvement, and maximum fun.</p>
+        <h2 style="text-align: center; margin-top: 3rem; color: var(--navy-dark); font-size: 2.2rem;">Why Choose Adventure MobileCade?</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h3><i class="fa-solid fa-gamepad" style="color: var(--orange-primary);"></i> What We Bring</h3>
+                <ul>
+                    <li><span><i class="fa-solid fa-check" style="color: var(--blue-accent);"></i> Classic + modern video game stations</span></li>
+                    <li><span><i class="fa-solid fa-check" style="color: var(--blue-accent);"></i> NES, SNES, N64, GameCube, Wii + more</span></li>
+                    <li><span><i class="fa-solid fa-check" style="color: var(--blue-accent);"></i> Switch, Xbox and party-friendly titles</span></li>
+                    <li><span><i class="fa-solid fa-check" style="color: var(--blue-accent);"></i> Clean, self-contained event setup</span></li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-calendar-star" style="color: var(--orange-primary);"></i> Perfect For</h3>
+                <ul>
+                    <li><span><i class="fa-solid fa-star" style="color: var(--blue-accent);"></i> Festivals and Main Street celebrations</span></li>
+                    <li><span><i class="fa-solid fa-star" style="color: var(--blue-accent);"></i> Birthdays and neighborhood parties</span></li>
+                    <li><span><i class="fa-solid fa-star" style="color: var(--blue-accent);"></i> Libraries, youth programs & Parks & Rec</span></li>
+                    <li><span><i class="fa-solid fa-star" style="color: var(--blue-accent);"></i> School and community events</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
-    <h2>What We Offer</h2>
-<ul>
-  <li><strong>Retro gaming stations (NES, SNES, N64, Sega, PlayStation)</strong></li>
+    <!-- EVENTS PAGE -->
+    <section id="events" class="page-section">
+        <h2>Event Services & Packages</h2>
+        <p>We supply complete, plug-and-play gaming stations tailored to suit venues of any size!</p>
+        
+        <div id="eventsGrid" class="grid-3">
+            <div class="card">
+                <h3>Community & Festivals</h3>
+                <p>Ideal for public gatherings, street fairs, and town celebrations looking for turn-key, high-throughput entertainment.</p>
+            </div>
+            <div class="card">
+                <h3>Parties & Birthdays</h3>
+                <p>Bring nostalgic multiplayer retro action and modern group gaming straight to your indoor or outdoor party!</p>
+            </div>
+            <div class="card">
+                <h3>Schools & Libraries</h3>
+                <p>Safe, family-friendly gaming environments curated for youth programs, reward days, and educational events.</p>
+            </div>
+        </div>
+    </section>
 
-  <!-- ⭐ PDF link placed directly under Retro Gaming Stations -->
-</ul>
+    <!-- FULL GAME MENU PAGE -->
+    <section id="gamemenu" class="page-section">
+        <h2>Complete Game Library</h2>
+        <p style="margin-bottom: 1.5rem;">Explore our physical and digital collection spanning decades of gaming history!</p>
+        
+        <input type="text" id="gameSearch" onkeyup="filterGames()" class="search-box" placeholder="🔍 Search games or systems (e.g., Mario, Zelda, Atari, Switch, Call of Duty)...">
 
-<p>
-  <a href="VideoGameMenu.pdf" target="_blank">
-      Download Full Video Game Menu (PDF)
-  </a>
-</p>
+        <div id="gameMenuContainer">
+            <!-- Systems rendered dynamically -->
+        </div>
+    </section>
 
-<ul>
-  <li>Family-Friendly Entertainment: Safe, inclusive fun for kids, teens, and adults</li>
-  <li>Private Party Packages: Birthdays, Neighborhood Parties, and Apartment Complex Events</li>
-  <li>Youth Program Engagement: Great for libraries, Parks & Rec, and after-school programs</li>
-</ul>
+    <!-- VIDEOS PAGE -->
+    <section id="videos" class="page-section">
+        <h2>Video Gallery & Highlights</h2>
+        <p style="margin-bottom: 1.5rem;">Check out real action clips and setup highlights from our events!</p>
+        <div id="videoContainerGrid" class="grid-2"></div>
+    </section>
 
-  
-    <p>Ready to level up your event? Visit our <a href="events.html">Events</a> or <a href="contact.html">Contact</a> page.</p>
-</div>
+    <!-- CONTENT MANAGER / WEBSITE EDITOR -->
+    <section id="manage" class="page-section admin-only">
+        <h2>Website Control Panel</h2>
+        <p>Edit text, upload custom logo files, add new games, or manage video highlights directly from here.</p>
 
+        <div class="grid-3" style="margin-top: 2rem;">
+            <!-- UPLOAD LOGO FILE -->
+            <div class="admin-box">
+                <h3><i class="fa-solid fa-image" style="color: var(--blue-accent);"></i> Upload Custom Logo</h3>
+                <form onsubmit="uploadCustomLogo(event)">
+                    <label>Select Logo File</label>
+                    <input type="file" id="logoFileInput" accept="image/*" required>
 
+                    <button type="submit" class="btn-cta" style="margin-top: 1.5rem; width: 100%;">Upload & Apply Logo</button>
+                    <button type="button" class="btn-cta" onclick="resetLogoToDefault()" style="margin-top: 0.5rem; width: 100%; background-color: #64748B;">Reset to Default Logo</button>
+                </form>
+            </div>
+
+            <!-- EDIT HERO -->
+            <div class="admin-box">
+                <h3><i class="fa-solid fa-pen-to-square" style="color: var(--blue-accent);"></i> Edit Homepage Banner</h3>
+                <form onsubmit="updateHeroText(event)">
+                    <label>Main Headline</label>
+                    <input type="text" id="editHeroTitle" required>
+
+                    <label>Tagline</label>
+                    <input type="text" id="editHeroTagline" required>
+
+                    <label>Description Paragraph</label>
+                    <textarea id="editHeroDesc" rows="3" required></textarea>
+
+                    <button type="submit" class="btn-cta" style="margin-top: 1.5rem; width: 100%;">Save Banner Changes</button>
+                </form>
+            </div>
+
+            <!-- ADD GAME -->
+            <div class="admin-box">
+                <h3><i class="fa-solid fa-gamepad" style="color: var(--blue-accent);"></i> Add Game to Menu</h3>
+                <form onsubmit="addNewGame(event)">
+                    <label>Console / System</label>
+                    <select id="newGameConsole" required>
+                        <option value="atari2600">Atari 2600</option>
+                        <option value="atari7800">Atari 7800</option>
+                        <option value="famicom">Famicom</option>
+                        <option value="gameboy">Game Boy</option>
+                        <option value="gba">Game Boy Advance</option>
+                        <option value="gbc">Game Boy Color</option>
+                        <option value="gamecube">GameCube</option>
+                        <option value="jp_n64">JP Nintendo 64</option>
+                        <option value="jp_nds">JP Nintendo DS</option>
+                        <option value="nes">NES</option>
+                        <option value="n3ds">Nintendo 3DS</option>
+                        <option value="n64">Nintendo 64</option>
+                        <option value="nds">Nintendo DS</option>
+                        <option value="switch">Nintendo Switch</option>
+                        <option value="ps1">PlayStation</option>
+                        <option value="ps2">PlayStation 2</option>
+                        <option value="ps3">PlayStation 3</option>
+                        <option value="ps4">PlayStation 4</option>
+                        <option value="ps5">PlayStation 5</option>
+                        <option value="gamegear">Sega Game Gear</option>
+                        <option value="genesis">Sega Genesis</option>
+                        <option value="mastersystem">Sega Master System</option>
+                        <option value="sfc">Super Famicom</option>
+                        <option value="snes">Super Nintendo (SNES)</option>
+                        <option value="wii">Wii</option>
+                        <option value="wiiu">Wii U</option>
+                        <option value="xbox">Xbox</option>
+                        <option value="xbox360">Xbox 360</option>
+                        <option value="xboxone">Xbox One</option>
+                    </select>
+
+                    <label>Game Title</label>
+                    <input type="text" id="newGameTitle" placeholder="e.g., Street Fighter II" required>
+
+                    <button type="submit" class="btn-cta" style="margin-top: 1.5rem; width: 100%;">Add Game</button>
+                </form>
+            </div>
+
+            <!-- ADD VIDEO (YOUTUBE OR LOCAL FILE) -->
+            <div class="admin-box">
+                <h3><i class="fa-solid fa-video" style="color: var(--blue-accent);"></i> Add Video</h3>
+                <form onsubmit="addNewVideo(event)">
+                    <label>Video Title</label>
+                    <input type="text" id="newVideoTitle" placeholder="e.g., Event Setup Highlight" required>
+
+                    <label>Source Type</label>
+                    <select id="newVideoType" onchange="toggleVideoInputSource()" required>
+                        <option value="youtube">YouTube Embed URL</option>
+                        <option value="local">Local Video File</option>
+                    </select>
+
+                    <!-- YouTube Input -->
+                    <div id="youtubeInputGroup">
+                        <label>YouTube Link or Embed URL</label>
+                        <input type="url" id="newVideoUrl" placeholder="https://www.youtube.com/embed/...">
+                    </div>
+
+                    <!-- Local File Input -->
+                    <div id="localInputGroup" style="display: none;">
+                        <label>Upload Local Video File</label>
+                        <input type="file" id="newVideoFile" accept="video/*">
+                    </div>
+
+                    <button type="submit" class="btn-cta" style="margin-top: 1.5rem; width: 100%;">Add Video</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT PAGE -->
+    <section id="about" class="page-section">
+        <h2>About Adventure MobileCade</h2>
+        <p style="margin-top: 1rem; font-size: 1.1rem;">
+            Platte City's premier mobile gaming experience! We deliver multi-generational video game entertainment directly to your event venue or party space.
+        </p>
+        <p style="margin-top: 1rem;">
+            Whether you want to re-experience 8-bit retro nostalgia on the NES and Atari, relive 90s multiplayer hits on N64 and Sega, or compete in modern blockbusters on Nintendo Switch and modern consoles, Adventure MobileCade brings a clean, fully-managed, self-contained station setup that keeps guests of all ages engaged!
+        </p>
+    </section>
+
+    <!-- CONTACT PAGE -->
+    <section id="contact" class="page-section">
+        <h2>Book Your Event Today</h2>
+        <p>Ready to bring decades of gaming to your next event? Reach out to lock in your date!</p>
+
+        <div class="grid-2">
+            <div class="card contact-form">
+                <h3>Send Us A Message</h3>
+                <form onsubmit="event.preventDefault(); alert('Thank you! Your message has been submitted.');">
+                    <label>Full Name</label>
+                    <input type="text" required placeholder="John Doe">
+                    
+                    <label>Email Address</label>
+                    <input type="email" required placeholder="john@example.com">
+                    
+                    <label>Event Type</label>
+                    <select>
+                        <option>Birthday Party</option>
+                        <option>Community / Festival</option>
+                        <option>School / Library Event</option>
+                        <option>Other</option>
+                    </select>
+
+                    <label>Message / Date Request</label>
+                    <textarea rows="4" placeholder="Tell us about your event details..."></textarea>
+                    
+                    <button type="submit" class="btn-cta" style="margin-top: 1rem; width: 100%;">Submit Booking Request</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Direct Contact Info</h3>
+                <p style="margin-bottom: 1.5rem;">Contact us today to book your next gaming adventure!</p>
+                <ul class="contact-info-list">
+                    <li><i class="fa-solid fa-envelope"></i> adventuremobilecade@gmail.com</li>
+                    <li><i class="fa-solid fa-location-dot"></i> Platte City, MO & Surrounding Areas</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Adventure MobileCade. All Rights Reserved.</p>
+        <p><a onclick="showPage('manage')" style="cursor: pointer;">Admin Panel</a></p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // SVG Dynamic Fallback Logo (If local file is missing)
+        const fallbackLogoSVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500"><rect width="500" height="500" fill="%230A1329"/><path d="M 250 50 L 400 200 L 100 200 Z" fill="%231E88E5"/><text x="250" y="320" font-family="Arial" font-weight="900" font-size="42" fill="%23FFFFFF" text-anchor="middle">ADVENTURE</text><text x="250" y="360" font-family="Arial" font-weight="800" font-size="24" fill="%23E2822A" text-anchor="middle">MOBILECADE</text><rect x="180" y="390" width="140" height="45" rx="10" fill="%23E2822A"/><text x="250" y="420" font-family="Arial" font-weight="900" font-size="20" fill="%23FFFFFF" text-anchor="middle">🎮 ENTERTAINMENT</text></svg>`;
+
+        function handleImageError(img) {
+            img.onerror = null;
+            img.src = fallbackLogoSVG;
+        }
+
+        // Custom Logo Upload Handler
+        function uploadCustomLogo(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('logoFileInput');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const logoDataUrl = evt.target.result;
+                    localStorage.setItem('mobilecade_custom_logo', logoDataUrl);
+                    applyLogoSource(logoDataUrl);
+                    alert('Custom logo successfully uploaded and applied!');
+                    showPage('home');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        function resetLogoToDefault() {
+            localStorage.removeItem('mobilecade_custom_logo');
+            applyLogoSource('AdventureMobileCadeLogoFinalMaster.jpg');
+            alert('Logo reset to default file.');
+        }
+
+        function applyLogoSource(src) {
+            document.getElementById('navLogo').src = src;
+            document.getElementById('heroLogo').src = src;
+        }
+
+        // System Configuration Map
+        const systemNames = {
+            atari2600: 'ATARI 2600',
+            atari7800: 'ATARI 7800',
+            famicom: 'FAMICOM',
+            gameboy: 'GAME BOY',
+            gba: 'GAME BOY ADVANCE',
+            gbc: 'GAME BOY COLOR',
+            gamecube: 'GAMECUBE',
+            jp_n64: 'JP NINTENDO 64',
+            jp_nds: 'JP NINTENDO DS',
+            nes: 'NES (NINTENDO ENTERTAINMENT SYSTEM)',
+            n3ds: 'NINTENDO 3DS',
+            n64: 'NINTENDO 64',
+            nds: 'NINTENDO DS',
+            switch: 'NINTENDO SWITCH',
+            ps1: 'PLAYSTATION',
+            ps2: 'PLAYSTATION 2',
+            ps3: 'PLAYSTATION 3',
+            ps4: 'PLAYSTATION 4',
+            ps5: 'PLAYSTATION 5',
+            gamegear: 'SEGA GAME GEAR',
+            genesis: 'SEGA GENESIS',
+            mastersystem: 'SEGA MASTER SYSTEM',
+            sfc: 'SUPER FAMICOM',
+            snes: 'SUPER NINTENDO (SNES)',
+            wii: 'WII',
+            wiiu: 'WII U',
+            xbox: 'XBOX',
+            xbox360: 'XBOX 360',
+            xboxone: 'XBOX ONE'
+        };
+
+        // State Storage
+        let videos = JSON.parse(localStorage.getItem('mobilecade_videos')) || [
+            {
+                title: 'Official Trailer & Event Setup',
+                type: 'youtube',
+                url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+            }
+        ];
+
+        // Master Game Menu attached directly from attached catalog
+        let defaultGames = {
+            atari2600: ["4 Games In 1 Cartridge", "Adventure", "Asteroids", "Atlantis", "Backgammon", "Barnstorming", "Basketball", "Berzerk", "Blackjack", "Bowling", "Breakout", "Carnival", "Checkers", "Chopper Command", "Circus Atari", "Combat", "Defender", "Demon Attack", "Donkey Kong [Coleco]", "Enduro", "Flag Capture", "Football", "Freeway", "Frogger", "Galaxian", "Gorf", "Haunted House", "Home Run", "Indy 500", "Kaboom!", "Kangaroo", "Keystone Kapers", "Laser Blast", "Mario Bros.", "Missile Command", "Night Driver", "Pitfall!", "Pole Position", "Raiders of the Lost Ark", "Realsports Collection", "River Raid", "Sky Diver", "Sky Jinks", "Slot Racers", "Sneak 'N Peek", "Space Invaders", "Space Jockey", "Star Ship", "Stargate", "Surround", "Target Fun", "Tennis", "Towering Inferno", "Venture [Coleco]", "Video Chess", "Video Pinball", "Warlords", "Word Zapper", "Yars' Revenge"],
+            atari7800: ["Centipede", "Dig Dug", "Donkey Kong Junior", "Pac-Man: Double Feature", "Pole Position II", "Winter Games", "Xevious"],
+            famicom: ["Baltron", "Dragon Ball: Shen Long no Nazo", "Kage no Densetsu", "Pro Yakyuu Family Stadium", "Senjou no Ookami", "Super Xevious", "Tennis"],
+            gameboy: ["Bases Loaded", "Monopoly", "NFL Quarterback Club", "Top Rank Tennis"],
+            gba: ["Aggravation / Sorry / Scrabble Jr", "Finding Nemo", "Hot Wheels Velocity X", "Ice Age 2 The Meltdown", "Konami Collector's Series Arcade Advanced", "Namco Museum", "Risk / Battleship / Clue"],
+            gbc: ["NFL Blitz 2000", "Stuart Little Journey Home"],
+            gamecube: ["Cars", "LEGO Star Wars", "Legends of Wrestling II", "Lord of the Rings Return of the King", "Madden 2005", "Madden 2007", "NASCAR Chase for the Cup 2005", "NBA Courtside 2002", "NHL 2004", "Sonic Adventure 2 Battle", "Spiderman", "Super Mario Strikers", "Super Smash Bros. Melee", "The Sims"],
+            jp_n64: ["Mario Tennis", "Power League 64", "Wonder Project J2"],
+            jp_nds: ["Yawaraka Atama Juku"],
+            nes: ["10-Yard Fight", "1942", "1943: The Battle of Midway", "3D WorldRunner", "Adventure Island", "Arkanoid", "Baseball Stars", "Bases Loaded 2 Second Season", "Batman The Video Game", "Black Bass", "Blades of Steel", "Blaster Master", "Burgertime", "California Games", "Captain Skyhawk", "Championship Bowling", "Cobra Command", "Cobra Triangle", "Commando", "Defender II", "Donkey Kong Classics", "Double Dragon", "Double Dragon II", "Double Dribble", "Duck Hunt", "Dynowarz The Destruction of Spondylus", "Excitebike", "F-15 City War", "Friday the 13th", "Ghostbusters", "Ghostbusters II", "Ghosts 'n Goblins", "Golf", "Gotcha", "Gun.Smoke", "Gyruss", "Heavy Shreddin'", "Hollywood Squares", "Ice Hockey", "Jaws", "Joust", "Jurassic Park", "Karate Champ", "Kickle Cubicle", "Kung Fu", "Lee Trevino's Fighting Golf", "Legend of Zelda", "Major League Baseball", "Mappy-Land", "Mighty Bomb Jack", "Mike Tyson's Punch-Out", "Mission Impossible", "Monopoly", "NES Open Tournament Golf", "Nintendo World Cup", "Operation Wolf", "Paperboy", "Quattro Arcade", "R.C. Pro-AM", "RBI Baseball", "Rad Racer II", "Rambo", "Road Blasters", "Rush'n Attack", "Sesame Street 123", "Sesame Street ABC", "Solitaire", "Spy Hunter", "Spy vs. Spy", "Star Wars", "Star Wars The Empire Strikes Back", "Super Glove Ball", "Super Mario Bros 2", "Super Mario Bros 3", "Super Mario Bros and Duck Hunt", "Super Pitfall", "Tag Team Wrestling", "Tecmo Bowl", "Teenage Mutant Ninja Turtles", "Teenage Mutant Ninja Turtles II", "Tetris", "The Karate Kid", "Tiger-Heli", "Top Gun", "Track and Field", "Track and Field II", "Wheel of Fortune", "Wheel of Fortune Family Edition", "WWF Wrestlemania Challenge", "Xevious", "Yoshi's Cookie", "Zelda II The Adventure of Link"],
+            n3ds: ["Bit. Trip Saga", "LEGO Legends of Chima: Laval's Journey", "Michael Jackson: The Experience 3D", "Nintendogs + Cats: Golden Retriever & New Friends"],
+            n64: ["Cruis'n World", "F1 World Grand Prix", "Kobe Bryant in NBA Courtside", "Madden 64", "Midway's Greatest Arcade Hits Vol 1", "NFL Quarterback Club 2000", "Turok Dinosaur Hunter"],
+            nds: ["100 All-Time Favorites", "ATV Thunder Ridge Riders and Monster Truck Mayhem", "Brain Age", "Brain Boost Beta Wave", "Jake Power: Handyman", "Jonas", "LEGO Pirates of the Caribbean: The Video Game", "Super Mario 64 DS"],
+            switch: ["Dragon Ball: The Breakers [Special Edition]", "Farming Simulator 23", "MLB The Show 22", "Mario Party Superstars", "Super Mario Bros. Wonder", "The Oregon Trail: Deluxe Edition", "The Smurfs 2: Prisoner of the Green Stone"],
+            ps1: ["Activision Classics", "ATV Quad Power Racing", "Big Bass World Championship", "Madden 2001", "Missile Command", "Scrabble", "Spec Ops Stealth Patrol", "Triple Play 97", "Wheel of Fortune"],
+            ps2: ["All-Star Baseball 2004", "Cabela's Alaskan Adventures", "Cabela's Big Game Hunter 2008", "Cabela's Dangerous Hunts", "Cabela's Deer Hunt 2005", "Cabela's Monster Bass", "Cabela's Outdoor Adventures", "Call of Duty 3 [Special Edition]", "Call of Duty Finest Hour", "City Crisis", "DT Racer", "F1 Championship Season 2000", "Final Fantasy X-2", "Fishermans Bass Club", "Ford Racing 2", "Gran Turismo 3", "Gran Turismo 4", "Hard Hitter Tennis", "Hasbro Family Game Night", "Indiana Jones and the Emperor's Tomb", "Jeopardy", "Lord of the Rings Two Towers", "MLB 07 The Show", "MLB 09: The Show", "MLB Power Pros", "MX vs ATV Untamed", "Madden 2005 [Collector's Edition]", "Madden 2006", "Max Payne", "Monster Jam", "NCAA Final Four 2002", "NFL GameDay 2002", "ProStroke Golf", "Rapala Pro Fishing", "Rebel Raiders Operation Nighthawk", "SOCOM II US Navy Seals", "SOCOM US Navy Seals Combined Assault", "Salt Lake 2002", "Smash Court Tennis Pro Tournament", "SnoCross 2", "Star Wars Battlefront 2", "Star Wars Starfighter", "Super Trucks Racing", "Suzuki TT Superbikes", "Taito Legends", "Tetris Worlds", "Thrillville Off The Rails", "Top Angler", "Transformers: The Game", "World Championship Poker", "World Series of Poker Tournament of Champions 2007"],
+            ps3: ["Amazing Spiderman", "Assassin's Creed III", "Batman Arkham Asylum", "Cabela's Dangerous Hunts 2013", "Call of Duty 4 Modern Warfare", "Call of Duty Black Ops II", "Call of Duty Ghosts", "Call of Duty Modern Warfare 3", "Call of Duty World at War", "Civilization Revolution", "Dishonored", "Elder Scrolls V: Skyrim", "Far Cry 4", "FIFA Soccer 13", "Hasbro Family Game Night 3", "High Velocity Bowling", "InFamous", "LEGO Batman 2", "LEGO Harry Potter Years 5-7", "MAG", "Madden NFL 11", "Madden NFL 12", "Madden NFL 25", "Major League Baseball 2K10", "Major League Baseball 2K7", "MotorStorm", "NBA 2K13", "NCAA Football 09", "NCAA Football 12", "Sonic Generations", "Sonic the Hedgehog", "Sonic's Ultimate Genesis Collection", "Sports Champions", "Street Fighter IV", "Tiger Woods PGA Tour 13", "Welcome To PlayStation 3 And PlayStation Network"],
+            ps4: ["Atari Flashback Classics Vol 1", "Dakar 18", "Deus Ex: Mankind Divided [Day One Edition]", "FIFA 17", "Immortals Fenyx Rising", "MLB 15: The Show", "MLB 16: The Show", "MLB The Show 17", "Monster Jam Steel Titans", "MX vs ATV All Out", "NBA 2K15", "Outriders", "PGA Tour 2K23", "Star Wars Battlefront", "Star Wars: Squadrons", "WWE 2K Battlegrounds"],
+            ps5: ["MLB The Show 25", "NHL 22"],
+            gamegear: ["Scratch Golf", "Sonic Chaos", "Sonic the Hedgehog", "Super Columns", "World Series Baseball"],
+            genesis: ["Aladdin", "Batman Returns", "John Madden Football '92", "Klax", "Madden 97", "Mick and Mack Global Gladiators", "Monopoly", "Ms. Pac-Man", "NFL '95", "NHL 96", "Revolution X", "Risk", "Road Rash II", "Sonic the Hedgehog", "Sports Talk Baseball", "Sports Talk Football '93 Starring Joe Montana", "Super Battleship", "Super Monaco GP", "Tecmo Super Bowl", "Urban Strike", "X-Men"],
+            mastersystem: ["After Burner", "Space Harrier"],
+            sfc: ["Dragon Ball Z: Super Butoden", "Great Golf", "Street Fighter II", "Super Mario Collection"],
+            snes: ["Bass Masters Classic Pro Edition", "Donkey Kong Country", "Donkey Kong Country 2", "Donkey Kong Country 3", "ESPN Baseball Tonight", "Home Alone 2 Lost In New York", "Monopoly", "NBA Jam", "Porky Pig's Haunted Holiday", "Wordtris"],
+            wii: ["Active Life Outdoor Challenge", "Build 'N Race", "Cabela's Dangerous Hunts 2011", "Cabela's Outdoor Adventures 2010", "Deca Sports", "EA Playground", "EA Sports Active", "Game Party", "Game Party 3", "LEGO Batman The Videogame", "LEGO Star Wars III: The Clone Wars", "Little League World Series Double Play", "Madden NFL 13", "Monster 4X4 World Circuit", "MySims SkyHeroes", "NPPL Championship Paintball 2009", "Pictionary", "Rapala Tournament Fishing", "Roogoo Twisted Towers", "SNK Arcade Classics Volume 1", "Sea Monsters Prehistoric Adventure", "Shaun White Snowboarding Road Trip", "Spore Hero", "Ultimate Board Game Collection", "Wheel of Fortune", "Who Wants To Be A Millionaire", "Wii Fit", "Wii Play", "Wii Sports", "Wii Sports Resort", "Wonder World Amusement Park", "Zelda Skyward Sword", "uDraw Studio", "uDraw Studio: Instant Artist"],
+            wiiu: ["Animal Crossing Amiibo Festival", "Disney Infinity [2.0 Edition]", "LEGO Dimensions", "Your Shape Fitness Evolved 2013"],
+            xbox: ["Brute Force", "Conflict Desert Storm", "ESPN NFL 2K5", "Full Spectrum Warrior", "MX 2002", "NCAA Football 2005 Top Spin Combo", "Namco Museum"],
+            xbox360: ["Banjo-Kazooie Nuts & Bolts & Viva Pinata", "Cabela's Dangerous Hunts 2011", "Game Party: In Motion", "Ghost Recon Advanced Warfighter 2", "Halo 3: ODST", "Halo 4", "Kinect Adventures", "Kinect Sports: Season 2", "Kinectimals", "Minecraft", "Nike + Kinect Training", "Official Xbox Magazine Demo Disc 75", "Project Gotham Racing 4", "Sonic's Ultimate Genesis Collection", "Top Spin 2", "UFC Personal Trainer"],
+            xboxone: ["Elder Scrolls Online: Tamriel Unlimited", "Hot Wheels Unleashed", "LEGO Ninjago Movie", "Madden NFL 21", "NBA 2K20", "Star Wars Battlefront", "Star Wars: Battlefront II", "Titanfall"]
+        };
+
+        let games = JSON.parse(localStorage.getItem('mobilecade_games')) || defaultGames;
+        let isPreviewMode = false;
+
+        // Initialize Page
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLogo = localStorage.getItem('mobilecade_custom_logo');
+            if (savedLogo) {
+                applyLogoSource(savedLogo);
+            }
+            renderVideos();
+            renderGames();
+        });
+
+        // Navigation Page Switcher
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+            
+            const navBtn = document.getElementById(`nav-${pageId}`);
+            if (navBtn) navBtn.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Preview Mode
+        function togglePreview() {
+            isPreviewMode = !isPreviewMode;
+            document.body.classList.toggle('is-preview', isPreviewMode);
+            document.getElementById('previewBanner').style.display = isPreviewMode ? 'block' : 'none';
+            renderVideos();
+            renderGames();
+        }
+
+        // Toggle Video Input Source (YouTube vs Local)
+        function toggleVideoInputSource() {
+            const sourceType = document.getElementById('newVideoType').value;
+            const ytGroup = document.getElementById('youtubeInputGroup');
+            const localGroup = document.getElementById('localInputGroup');
+
+            if (sourceType === 'youtube') {
+                ytGroup.style.display = 'block';
+                localGroup.style.display = 'none';
+            } else {
+                ytGroup.style.display = 'none';
+                localGroup.style.display = 'block';
+            }
+        }
+
+        // Render Videos Gallery
+        function renderVideos() {
+            const container = document.getElementById('videoContainerGrid');
+            container.innerHTML = '';
+
+            if (videos.length === 0) {
+                container.innerHTML = '<p>No videos available yet.</p>';
+                return;
+            }
+
+            videos.forEach((video, index) => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+
+                let videoHTML = '';
+                if (video.type === 'youtube') {
+                    let embedUrl = video.url;
+                    if (embedUrl.includes('watch?v=')) {
+                        embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                    }
+                    videoHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+                } else if (video.type === 'local') {
+                    videoHTML = `<video src="${video.url}" controls></video>`;
+                }
+
+                card.innerHTML = `
+                    <div class="video-wrapper">
+                        ${videoHTML}
+                    </div>
+                    <div class="video-info">
+                        <span class="video-title">${video.title}</span>
+                        ${!isPreviewMode ? `<button class="delete-btn-video admin-only" onclick="deleteVideo(${index})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Add New Video (YouTube or Local)
+        function addNewVideo(e) {
+            e.preventDefault();
+            const title = document.getElementById('newVideoTitle').value.trim();
+            const sourceType = document.getElementById('newVideoType').value;
+            let videoUrl = '';
+
+            if (sourceType === 'youtube') {
+                videoUrl = document.getElementById('newVideoUrl').value.trim();
+                if (!videoUrl) {
+                    alert('Please enter a YouTube link or Embed URL.');
+                    return;
+                }
+            } else {
+                const fileInput = document.getElementById('newVideoFile');
+                if (fileInput.files && fileInput.files[0]) {
+                    videoUrl = URL.createObjectURL(fileInput.files[0]);
+                } else {
+                    alert('Please select a local video file to upload.');
+                    return;
+                }
+            }
+
+            videos.push({ title: title, type: sourceType, url: videoUrl });
+            localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
+
+            // Clear inputs
+            document.getElementById('newVideoTitle').value = '';
+            document.getElementById('newVideoUrl').value = '';
+            document.getElementById('newVideoFile').value = '';
+
+            renderVideos();
+            alert('Video added successfully!');
+            showPage('videos');
+        }
+
+        // Delete Video
+        function deleteVideo(index) {
+            if (confirm('Are you sure you want to delete this video?')) {
+                videos.splice(index, 1);
+                localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
+                renderVideos();
+            }
+        }
+
+        // Render Games Menu
+        function renderGames() {
+            const container = document.getElementById('gameMenuContainer');
+            container.innerHTML = '';
+
+            Object.keys(systemNames).forEach(consoleKey => {
+                const gameList = games[consoleKey] || [];
+                if (gameList.length === 0) return;
+
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'console-group';
+                groupDiv.setAttribute('data-console', consoleKey);
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'console-header';
+                headerDiv.innerHTML = `<i class="fa-solid fa-gamepad"></i> ${systemNames[consoleKey]}`;
+
+                const ul = document.createElement('ul');
+                ul.className = 'game-list-ul';
+                ul.id = `list-${consoleKey}`;
+
+                gameList.sort().forEach((gameTitle, gIndex) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span>${gameTitle}</span>
+                        ${!isPreviewMode ? `<button class="delete-btn admin-only" title="Delete Game" onclick="deleteGame('${consoleKey}', ${gIndex})">&times;</button>` : ''}
+                    `;
+                    ul.appendChild(li);
+                });
+
+                groupDiv.appendChild(headerDiv);
+                groupDiv.appendChild(ul);
+                container.appendChild(groupDiv);
+            });
+        }
+
+        // Add New Game
+        function addNewGame(e) {
+            e.preventDefault();
+            const consoleKey = document.getElementById('newGameConsole').value;
+            const title = document.getElementById('newGameTitle').value.trim();
+
+            if (!title) return;
+
+            if (!games[consoleKey]) {
+                games[consoleKey] = [];
+            }
+
+            games[consoleKey].push(title);
+            localStorage.setItem('mobilecade_games', JSON.stringify(games));
+
+            document.getElementById('newGameTitle').value = '';
+            renderGames();
+            alert(`"${title}" added to ${systemNames[consoleKey]}!`);
+            showPage('gamemenu');
+        }
+
+        // Delete Game
+        function deleteGame(consoleKey, index) {
+            if (confirm(`Remove this game from ${systemNames[consoleKey]}?`)) {
+                games[consoleKey].splice(index, 1);
+                localStorage.setItem('mobilecade_games', JSON.stringify(games));
+                renderGames();
+            }
+        }
+
+        // Search/Filter Games
+        function filterGames() {
+            const query = document.getElementById('gameSearch').value.toLowerCase();
+            const groups = document.querySelectorAll('.console-group');
+
+            groups.forEach(group => {
+                const items = group.querySelectorAll('li');
+                let hasMatch = false;
+
+                items.forEach(li => {
+                    const text = li.innerText.toLowerCase();
+                    if (text.includes(query)) {
+                        li.style.display = 'flex';
+                        hasMatch = true;
+                    } else {
+                        li.style.display = 'none';
+                    }
+                });
+
+                group.style.display = hasMatch ? 'block' : 'none';
+            });
+        }
+
+        // Edit Hero Dynamic Text
+        function updateHeroText(e) {
+            e.preventDefault();
+            const title = document.getElementById('editHeroTitle').value;
+            const tagline = document.getElementById('editHeroTagline').value;
+            const desc = document.getElementById('editHeroDesc').value;
+
+            document.getElementById('dynHeroTitle').innerText = title;
+            document.getElementById('dynHeroTagline').innerText = tagline;
+            document.getElementById('dynHeroDesc').innerText = desc;
+
+            alert('Banner text updated successfully!');
+            showPage('home');
+        }
+    </script>
 </body>
 </html>
-
