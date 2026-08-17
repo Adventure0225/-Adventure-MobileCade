@@ -150,11 +150,17 @@
             background-color: var(--blue-accent);
             color: #fff !important;
         }
-
+ 
         .btn-preview {
             background-color: #475569;
             color: #fff !important;
         }
+
+        /* Force-hide top admin/preview buttons for public deployments */
+        .btn-admin, .btn-preview { display: none !important; }
+
+        /* If admin authenticated, show admin controls via JS by removing the is-preview class */
+        body:not(.is-preview) .btn-admin, body:not(.is-preview) .btn-preview { display: inline-block !important; }
 
         /* --- PAGE ROUTING SYSTEM --- */
         .page-section {
