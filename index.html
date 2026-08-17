@@ -530,8 +530,6 @@
                     <li><a onclick="showPage('videos')" id="nav-videos">Videos</a></li>
                     <li><a onclick="showPage('about')" id="nav-about">About</a></li>
                     <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
-                    <li class="admin-only"><a onclick="showPage('manage')" id="nav-manage" class="btn-cta btn-admin"><i class="fa-solid fa-gear"></i> Edit Site</a></li>
-                    <li><a onclick="togglePreview()" id="btnPreviewToggle" class="btn-cta btn-preview"><i class="fa-solid fa-eye"></i> Preview Mode</a></li>
                 </ul>
             </nav>
         </div>
@@ -687,6 +685,10 @@
     <section id="manage" class="page-section admin-only">
         <h2>Website Control Panel</h2>
         <p>Edit banner text, upload custom logos, manage event offerings, add new games, or manage video highlights.</p>
+        <p style="text-align: right; margin-top: -1rem;">
+            <button class="btn-cta" onclick="setAdminPasscode()">Change Passcode</button>
+            <button class="btn-cta" style="background-color: #64748B;" onclick="lockAdmin()">Lock Admin</button>
+        </p>
 
         <div class="grid-3" style="margin-top: 2rem;">
             <!-- ADD EVENT PACKAGE -->
@@ -808,7 +810,7 @@
     <!-- FOOTER -->
     <footer>
         <p>&copy; 2026 Adventure MobileCade. All Rights Reserved.</p>
-        <p><a onclick="showPage('manage')" style="cursor: pointer;">Admin Panel</a></p>
+        <p><a onclick="openAdminPanel()" style="cursor: pointer;">Admin Panel</a></p>
     </footer>
 
     <!-- JAVASCRIPT LOGIC -->
@@ -847,6 +849,49 @@
         function applyLogoSource(src) {
             document.getElementById('navLogo').src = src;
             document.getElementById('heroLogo').src = src;
+        }
+
+        // --- Admin passcode protection ---
+        const DEFAULT_ADMIN_PASS = '1234'; // change this using the "Change Passcode" button after authenticating
+        function getAdminPasscode() {
+            return localStorage.getItem('mobilecade_admin_passcode') || DEFAULT_ADMIN_PASS;
+        }
+
+        function openAdminPanel() {
+            // Prompt for a 4-digit passcode
+            const attempt = prompt('Enter 4-digit admin passcode to access the control panel:');
+            if (!attempt) return;
+            if (!/^\d{4}$/.test(attempt)) { alert('Passcode must be 4 digits.'); return; }
+            if (attempt === getAdminPasscode()) {
+                localStorage.setItem('mobilecade_admin_authenticated', 'true');
+                isAdmin = true;
+                isPreviewMode = false;
+                document.body.classList.remove('is-preview');
+                document.getElementById('previewBanner').style.display = 'none';
+                renderEvents(); renderVideos(); renderGames();
+                showPage('manage');
+            } else {
+                alert('Incorrect passcode.');
+            }
+        }
+
+        function lockAdmin() {
+            localStorage.removeItem('mobilecade_admin_authenticated');
+            isAdmin = false;
+            isPreviewMode = true;
+            document.body.classList.add('is-preview');
+            document.getElementById('previewBanner').style.display = 'none';
+            renderEvents(); renderVideos(); renderGames();
+            showPage('home');
+        }
+
+        function setAdminPasscode() {
+            if (!isAdmin) { alert('Authenticate first'); return; }
+            const newPass = prompt('Enter new 4-digit admin passcode:');
+            if (!newPass) return;
+            if (!/^\d{4}$/.test(newPass)) { alert('Passcode must be 4 digits.'); return; }
+            localStorage.setItem('mobilecade_admin_passcode', newPass);
+            alert('Admin passcode updated');
         }
 
         // System Configuration Map
@@ -934,7 +979,9 @@
         };
 
         let games = JSON.parse(localStorage.getItem('mobilecade_games')) || defaultGames;
-        let isPreviewMode = false;
+        // Default to public (preview) mode so admin controls are hidden unless authenticated
+        let isPreviewMode = true;
+        let isAdmin = false;
 
         // Initialize Page
         window.addEventListener('DOMContentLoaded', () => {
@@ -942,15 +989,28 @@
             if (savedLogo) {
                 applyLogoSource(savedLogo);
             }
-            
-            // Check for preview URL parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('preview') || urlParams.has('public')) {
+
+            // If previously authenticated as admin, keep admin unlocked
+            const adminAuth = localStorage.getItem('mobilecade_admin_authenticated') === 'true';
+            if (adminAuth) {
+                isAdmin = true;
+                isPreviewMode = false;
+                document.body.classList.remove('is-preview');
+                document.getElementById('previewBanner').style.display = 'none';
+            } else {
+                // Default public view: preview mode active (hide admin controls)
                 isPreviewMode = true;
                 document.body.classList.add('is-preview');
-                document.getElementById('previewBanner').style.display = 'block';
+                // Don't show the preview banner by default for public viewers
+                document.getElementById('previewBanner').style.display = 'none';
+
+                // Optionally show the preview banner if preview/public URL param provided
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('preview') || urlParams.has('public')) {
+                    document.getElementById('previewBanner').style.display = 'block';
+                }
             }
-            
+
             renderEvents();
             renderVideos();
             renderGames();
