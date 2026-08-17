@@ -942,6 +942,15 @@
             if (savedLogo) {
                 applyLogoSource(savedLogo);
             }
+            
+            // Check for preview URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('preview') || urlParams.has('public')) {
+                isPreviewMode = true;
+                document.body.classList.add('is-preview');
+                document.getElementById('previewBanner').style.display = 'block';
+            }
+            
             renderEvents();
             renderVideos();
             renderGames();
