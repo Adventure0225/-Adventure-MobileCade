@@ -1057,7 +1057,7 @@
                 card.innerHTML = `
                     <h3>${item.title}</h3>
                     <p>${item.desc}</p>
-                    ${!isPreviewMode ? `<button class="delete-btn-card admin-only" onclick="deleteEvent(${index})"><i class="fa-solid fa-trash"></i> Delete Event</button>` : ''}
+                    ${isAdmin ? `<button class="delete-btn-card admin-only" onclick="deleteEvent(${index})"><i class="fa-solid fa-trash"></i> Delete Event</button>` : ''}
                 `;
                 container.appendChild(card);
             });
@@ -1137,7 +1137,7 @@
                     </div>
                     <div class="video-info">
                         <span class="video-title">${video.title}</span>
-                        ${!isPreviewMode ? `<button class="delete-btn-card admin-only" style="margin-top:0;" onclick="deleteVideo(${index})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+                        ${isAdmin ? `<button class="delete-btn-card admin-only" style="margin-top:0;" onclick="deleteVideo(${index})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
                     </div>
                 `;
                 container.appendChild(card);
@@ -1213,7 +1213,7 @@
                     const li = document.createElement('li');
                     li.innerHTML = `
                         <span>${gameTitle}</span>
-                        ${!isPreviewMode ? `<button class="delete-btn admin-only" title="Delete Game" onclick="deleteGame('${consoleKey}', ${gIndex})">&times;</button>` : ''}
+                        ${isAdmin ? `<button class="delete-btn admin-only" title="Delete Game" onclick="deleteGame('${consoleKey}', ${gIndex})">&times;</button>` : ''}
                     `;
                     ul.appendChild(li);
                 });
