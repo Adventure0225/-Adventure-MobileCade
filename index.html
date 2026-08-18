@@ -1155,8 +1155,10 @@
             container.innerHTML = '';
 
             if (videos.length === 0) {
-                container.innerHTML = '<p>No videos available yet.</p>';
-                return;
+                // temporary test: if the published videos list is empty, render a hard-coded test video so playback can be verified for everyone
+                container.innerHTML = `<div class="video-card"><div class="video-wrapper"><video src="videos/IMG_6853.mp4" controls></video></div><div class="video-info"><span class="video-title">Test Video (IMG_6853)</span></div></div>`;
+                // continue to allow admin edits in-session
+                // return;  // keep rendering if videos present
             }
 
             videos.forEach((video, index) => {
