@@ -694,6 +694,7 @@
         <p style="text-align: right; margin-top: -1rem;">
             <button class="btn-cta" onclick="setAdminPasscode()">Change Passcode</button>
             <button class="btn-cta" style="background-color: #64748B;" onclick="lockAdmin()">Lock Admin</button>
+            <button class="btn-cta" style="background-color: #0ea5e9;" onclick="downloadVideosJson()">Download videos.json</button>
         </p>
 
         <div class="grid-3" style="margin-top: 2rem;">
@@ -893,6 +894,23 @@
             showPage('home');
         }
 
+        // Download current videos as a videos.json file for committing to the repo
+        function downloadVideosJson() {
+            if (!isAdmin) { alert('Authenticate first to download videos.json'); return; }
+            try {
+                const payload = JSON.stringify(videos, null, 2);
+                const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(payload);
+                const a = document.createElement('a');
+                a.setAttribute('href', dataStr);
+                a.setAttribute('download', 'videos.json');
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } catch (e) {
+                alert('Failed to prepare videos.json: ' + e.message);
+            }
+        }
+
         function setAdminPasscode() {
             if (!isAdmin) { alert('Authenticate first'); return; }
             const newPass = prompt('Enter new 4-digit admin passcode:');
@@ -944,14 +962,17 @@
 
         let events = JSON.parse(localStorage.getItem('mobilecade_events')) || defaultEvents;
 
-        // Default Videos
-        let videos = JSON.parse(localStorage.getItem('mobilecade_videos')) || [
+        // Default Videos (fallback if remote videos.json isn't available)
+        const defaultVideos = [
             {
                 title: 'Official Trailer & Event Setup',
                 type: 'youtube',
                 url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
             }
         ];
+
+        // Videos list will be loaded from /videos.json on page load; client edits stay local until exported
+        let videos = [];
 
         // Master Game Menu
         let defaultGames = {
@@ -1001,31 +1022,68 @@
             // Clear any stale persisted admin flag so public visitors do not inherit admin access.
             localStorage.removeItem('mobilecade_admin_authenticated');
 
-            // Only keep admin unlocked for the current tab/session, not across browser refreshes.
-            const adminAuth = sessionStorage.getItem('mobilecade_admin_authenticated') === 'true';
-            if (adminAuth) {
-                isAdmin = true;
-                isPreviewMode = false;
-                document.body.classList.remove('is-preview');
-                document.getElementById('previewBanner').style.display = 'none';
-            } else {
-                // Default public view: preview mode active (hide admin controls)
-                isAdmin = false;
-                isPreviewMode = true;
-                document.body.classList.add('is-preview');
-                // Don't show the preview banner by default for public viewers
-                document.getElementById('previewBanner').style.display = 'none';
+            // Load videos from central videos.json; fallback to localStorage or default if fetch fails
+            fetch('/videos.json', { cache: 'no-store' })
+                .then(resp => {
+                    if (!resp.ok) throw new Error('no remote videos.json');
+                    return resp.json();
+                })
+                .then(data => {
+                    videos = data;
+                    localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
 
-                // Optionally show the preview banner if preview/public URL param provided
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('preview') || urlParams.has('public')) {
-                    document.getElementById('previewBanner').style.display = 'block';
-                }
-            }
+                    // Only keep admin unlocked for the current tab/session, not across browser refreshes.
+                    const adminAuth = sessionStorage.getItem('mobilecade_admin_authenticated') === 'true';
+                    if (adminAuth) {
+                        isAdmin = true;
+                        isPreviewMode = false;
+                        document.body.classList.remove('is-preview');
+                        document.getElementById('previewBanner').style.display = 'none';
+                    } else {
+                        // Default public view: preview mode active (hide admin controls)
+                        isAdmin = false;
+                        isPreviewMode = true;
+                        document.body.classList.add('is-preview');
+                        // Don't show the preview banner by default for public viewers
+                        document.getElementById('previewBanner').style.display = 'none';
 
-            renderEvents();
-            renderVideos();
-            renderGames();
+                        // Optionally show the preview banner if preview/public URL param provided
+                        const urlParams = new URLSearchParams(window.location.search);
+                        if (urlParams.has('preview') || urlParams.has('public')) {
+                            document.getElementById('previewBanner').style.display = 'block';
+                        }
+                    }
+
+                    renderEvents();
+                    renderVideos();
+                    renderGames();
+                })
+                .catch(() => {
+                    // Fallback: use localStorage or default
+                    videos = JSON.parse(localStorage.getItem('mobilecade_videos')) || defaultVideos;
+
+                    const adminAuth = sessionStorage.getItem('mobilecade_admin_authenticated') === 'true';
+                    if (adminAuth) {
+                        isAdmin = true;
+                        isPreviewMode = false;
+                        document.body.classList.remove('is-preview');
+                        document.getElementById('previewBanner').style.display = 'none';
+                    } else {
+                        isAdmin = false;
+                        isPreviewMode = true;
+                        document.body.classList.add('is-preview');
+                        document.getElementById('previewBanner').style.display = 'none';
+
+                        const urlParams = new URLSearchParams(window.location.search);
+                        if (urlParams.has('preview') || urlParams.has('public')) {
+                            document.getElementById('previewBanner').style.display = 'block';
+                        }
+                    }
+
+                    renderEvents();
+                    renderVideos();
+                    renderGames();
+                });
         });
 
         // Navigation Page Switcher
