@@ -792,21 +792,9 @@
                     <label>Video Title</label>
                     <input type="text" id="newVideoTitle" placeholder="e.g., Event Setup Highlight" required>
 
-                    <label>Source Type</label>
-                    <select id="newVideoType" onchange="toggleVideoInputSource()" required>
-                        <option value="youtube">YouTube Embed URL</option>
-                        <option value="local">Local Video File</option>
-                    </select>
-
-                    <div id="youtubeInputGroup">
-                        <label>YouTube Link or Embed URL</label>
-                        <input type="url" id="newVideoUrl" placeholder="https://www.youtube.com/embed/...">
-                    </div>
-
-                    <div id="localInputGroup" style="display: none;">
-                        <label>Upload Local Video File</label>
-                        <input type="file" id="newVideoFile" accept="video/*">
-                    </div>
+                    <label>Upload Video File</label>
+                    <input type="file" id="newVideoFile" accept="video/*" required>
+                    <p style="font-size:0.9rem; color: #64748B; margin-top:0.5rem;">YouTube embeds removed — only local video files are supported for public publishing.</p>
 
                     <button type="submit" class="btn-cta" style="margin-top: 1.5rem; width: 100%;">Add Video</button>
                 </form>
@@ -1156,18 +1144,9 @@
         }
 
         // Toggle Video Input Source
+        // YouTube support removed — only local files supported; toggle function removed intentionally.
         function toggleVideoInputSource() {
-            const sourceType = document.getElementById('newVideoType').value;
-            const ytGroup = document.getElementById('youtubeInputGroup');
-            const localGroup = document.getElementById('localInputGroup');
-
-            if (sourceType === 'youtube') {
-                ytGroup.style.display = 'block';
-                localGroup.style.display = 'none';
-            } else {
-                ytGroup.style.display = 'none';
-                localGroup.style.display = 'block';
-            }
+            // no-op
         }
 
         // Render Videos Gallery
@@ -1184,16 +1163,9 @@
                 const card = document.createElement('div');
                 card.className = 'video-card';
 
-                let videoHTML = '';
-                if (video.type === 'youtube') {
-                    let embedUrl = video.url;
-                    if (embedUrl.includes('watch?v=')) {
-                        embedUrl = embedUrl.replace('watch?v=', 'embed/');
-                    }
-                    videoHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-                } else if (video.type === 'local') {
-                    videoHTML = `<video src="${video.url}" controls></video>`;
-                }
+                // Only render local videos (YouTube embeds removed)
+                if (video.type !== 'local') return;
+                let videoHTML = `<video src="${video.url}" controls></video>`;
 
                 card.innerHTML = `
                     <div class="video-wrapper">
@@ -1212,30 +1184,20 @@
         function addNewVideo(e) {
             e.preventDefault();
             const title = document.getElementById('newVideoTitle').value.trim();
-            const sourceType = document.getElementById('newVideoType').value;
+            const fileInput = document.getElementById('newVideoFile');
             let videoUrl = '';
 
-            if (sourceType === 'youtube') {
-                videoUrl = document.getElementById('newVideoUrl').value.trim();
-                if (!videoUrl) {
-                    alert('Please enter a YouTube link or Embed URL.');
-                    return;
-                }
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                videoUrl = URL.createObjectURL(fileInput.files[0]);
             } else {
-                const fileInput = document.getElementById('newVideoFile');
-                if (fileInput.files && fileInput.files[0]) {
-                    videoUrl = URL.createObjectURL(fileInput.files[0]);
-                } else {
-                    alert('Please select a local video file to upload.');
-                    return;
-                }
+                alert('Please select a local video file to upload.');
+                return;
             }
 
-            videos.push({ title: title, type: sourceType, url: videoUrl });
+            videos.push({ title: title, type: 'local', url: videoUrl });
             localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
 
             document.getElementById('newVideoTitle').value = '';
-            document.getElementById('newVideoUrl').value = '';
             document.getElementById('newVideoFile').value = '';
 
             renderVideos();
