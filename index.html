@@ -612,7 +612,7 @@
         <div id="videoContainerGrid" class="grid-2"></div>
         <!-- Temporary direct link to published MP4 for playback verification -->
         <div style="text-align:center; margin-top: 1rem;">
-            <a id="directVideoLink" href="/videos/IMG_6853.mp4" target="_blank" class="btn-cta" style="background-color:#10B981;">Open published video file (direct)</a>
+            <a id="directVideoLink" href="https://adventure0225.github.io/-Adventure-MobileCade/videos/IMG_6853.mp4" target="_blank" class="btn-cta" style="background-color:#10B981;">Open published video file (direct)</a>
         </div>
     </section>
 
@@ -1171,7 +1171,10 @@
 
                 // Only render local videos (YouTube embeds removed)
                 if (video.type !== 'local') return;
-                let videoHTML = `<video src="${video.url}" controls></video>`;
+                // Build an absolute URL so project pages (username.github.io/repo) resolve correctly
+                const basePath = window.location.origin + '/-Adventure-MobileCade/';
+                const srcUrl = (/^https?:\/\//i.test(video.url)) ? video.url : (basePath + video.url.replace(/^\/+/, ''));
+                let videoHTML = `<video src="${srcUrl}" controls></video>`;
 
                 card.innerHTML = `
                     <div class="video-wrapper">
