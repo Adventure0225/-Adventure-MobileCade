@@ -534,6 +534,7 @@
                     <li><a onclick="showPage('events')" id="nav-events">Events</a></li>
                     <li><a onclick="showPage('gamemenu')" id="nav-gamemenu">Game Menu</a></li>
                     <li><a onclick="showPage('videos')" id="nav-videos">Videos</a></li>
+                    <li><a onclick="showPage('photos')" id="nav-photos">Photos</a></li>
                     <li><a onclick="showPage('about')" id="nav-about">About</a></li>
                     <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
                 </ul>
@@ -614,6 +615,13 @@
         <div style="text-align:center; margin-top: 1rem;">
             <a id="directVideoLink" href="https://adventure0225.github.io/-Adventure-MobileCade/videos/IMG_6853.mp4" target="_blank" class="btn-cta" style="background-color:#10B981;">Open published video file (direct)</a>
         </div>
+    </section>
+
+    <!-- PHOTOS PAGE -->
+    <section id="photos" class="page-section">
+        <h2>Photo Gallery</h2>
+        <p style="margin-bottom: 1.5rem;">Browse photos from our events and setups.</p>
+        <div id="photoContainerGrid" class="grid-3"></div>
     </section>
 
     <!-- ABOUT PAGE -->
@@ -803,6 +811,21 @@
                     <button type="submit" class="btn-cta" style="margin-top: 1.5rem; width: 100%;">Add Video</button>
                 </form>
             </div>
+
+            <!-- PHOTO GALLERY ADMIN -->
+            <div class="admin-box">
+                <h3><i class="fa-solid fa-images" style="color: var(--blue-accent);"></i> Photo Gallery</h3>
+                <form onsubmit="addNewPhoto(event)">
+                    <label>Photo Title</label>
+                    <input type="text" id="newPhotoTitle" placeholder="e.g., Event Setup" required>
+
+                    <label>Upload Photo</label>
+                    <input type="file" id="newPhotoFile" accept="image/*" required>
+
+                    <button type="submit" class="btn-cta" style="margin-top: 1.5rem; width: 100%;">Add Photo</button>
+                    <button type="button" class="btn-cta" style="margin-top: 0.5rem; background-color:#0ea5e9;" onclick="downloadPhotosJson()">Download photos.json</button>
+                </form>
+            </div>
         </div>
     </section>
 
@@ -963,8 +986,12 @@
             }
         ];
 
-        // Videos list will be loaded from /videos.json on page load; client edits stay local until exported
+        // Default Photos (fallback)
+        const defaultPhotos = [];
+
+        // Videos/photos lists will be loaded from /videos.json and /photos.json on page load; client edits stay local until exported
         let videos = [];
+        let photos = [];
 
         // Master Game Menu
         let defaultGames = {
@@ -1075,6 +1102,22 @@
                     renderEvents();
                     renderVideos();
                     renderGames();
+                });
+
+            // Load photos from central photos.json; fallback to localStorage
+            fetch('/photos.json', { cache: 'no-store' })
+                .then(resp => {
+                    if (!resp.ok) throw new Error('no remote photos.json');
+                    return resp.json();
+                })
+                .then(data => {
+                    photos = data;
+                    localStorage.setItem('mobilecade_photos', JSON.stringify(photos));
+                    renderPhotos();
+                })
+                .catch(() => {
+                    photos = JSON.parse(localStorage.getItem('mobilecade_photos')) || defaultPhotos;
+                    renderPhotos();
                 });
         });
 
@@ -1221,6 +1264,66 @@
                 localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
                 renderVideos();
             }
+        }
+
+        // --- Photos: render/add/delete/download ---
+        function renderPhotos() {
+            const container = document.getElementById('photoContainerGrid');
+            container.innerHTML = '';
+
+            if (!photos || photos.length === 0) {
+                container.innerHTML = '<p>No photos available yet.</p>';
+                return;
+            }
+
+            photos.forEach((p, idx) => {
+                if (!p || p.type !== 'local') return;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${(window.location.origin + '/-Adventure-MobileCade/' + p.url).replace(/\/\/+/, '/').replace('https:/', 'https://')}" alt="${p.title}" style="width:100%; height:auto; border-radius:6px;"/>
+                    <h3 style="margin-top:0.75rem;">${p.title}</h3>
+                    ${isAdmin ? `<button class="delete-btn-card admin-only" onclick="deletePhoto(${idx})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addNewPhoto(e) {
+            e.preventDefault();
+            const title = document.getElementById('newPhotoTitle').value.trim();
+            const fileInput = document.getElementById('newPhotoFile');
+            if (!title) { alert('Please enter a title'); return; }
+            if (!fileInput || !fileInput.files || !fileInput.files[0]) { alert('Please select a photo file'); return; }
+            const url = URL.createObjectURL(fileInput.files[0]);
+            photos.push({ title: title, type: 'local', url: url });
+            localStorage.setItem('mobilecade_photos', JSON.stringify(photos));
+            document.getElementById('newPhotoTitle').value = '';
+            document.getElementById('newPhotoFile').value = '';
+            renderPhotos();
+            alert('Photo added (local preview). Remember to download photos.json and commit with actual photo files to publish for everyone.');
+        }
+
+        function deletePhoto(index) {
+            if (confirm('Remove this photo?')) {
+                photos.splice(index, 1);
+                localStorage.setItem('mobilecade_photos', JSON.stringify(photos));
+                renderPhotos();
+            }
+        }
+
+        function downloadPhotosJson() {
+            if (!isAdmin) { alert('Authenticate first to download photos.json'); return; }
+            try {
+                const payload = JSON.stringify(photos, null, 2);
+                const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(payload);
+                const a = document.createElement('a');
+                a.setAttribute('href', dataStr);
+                a.setAttribute('download', 'photos.json');
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } catch (e) { alert('Failed to prepare photos.json: ' + e.message); }
         }
 
         // Render Games Menu
