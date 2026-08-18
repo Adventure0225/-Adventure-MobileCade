@@ -869,7 +869,8 @@
             if (!attempt) return;
             if (!/^\d{4}$/.test(attempt)) { alert('Passcode must be 4 digits.'); return; }
             if (attempt === getAdminPasscode()) {
-                localStorage.setItem('mobilecade_admin_authenticated', 'true');
+                sessionStorage.setItem('mobilecade_admin_authenticated', 'true');
+                localStorage.removeItem('mobilecade_admin_authenticated');
                 isAdmin = true;
                 isPreviewMode = false;
                 document.body.classList.remove('is-preview');
@@ -882,6 +883,7 @@
         }
 
         function lockAdmin() {
+            sessionStorage.removeItem('mobilecade_admin_authenticated');
             localStorage.removeItem('mobilecade_admin_authenticated');
             isAdmin = false;
             isPreviewMode = true;
@@ -996,8 +998,11 @@
                 applyLogoSource(savedLogo);
             }
 
-            // If previously authenticated as admin, keep admin unlocked
-            const adminAuth = localStorage.getItem('mobilecade_admin_authenticated') === 'true';
+            // Clear any stale persisted admin flag so public visitors do not inherit admin access.
+            localStorage.removeItem('mobilecade_admin_authenticated');
+
+            // Only keep admin unlocked for the current tab/session, not across browser refreshes.
+            const adminAuth = sessionStorage.getItem('mobilecade_admin_authenticated') === 'true';
             if (adminAuth) {
                 isAdmin = true;
                 isPreviewMode = false;
@@ -1005,6 +1010,7 @@
                 document.getElementById('previewBanner').style.display = 'none';
             } else {
                 // Default public view: preview mode active (hide admin controls)
+                isAdmin = false;
                 isPreviewMode = true;
                 document.body.classList.add('is-preview');
                 // Don't show the preview banner by default for public viewers
