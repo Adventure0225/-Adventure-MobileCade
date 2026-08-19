@@ -643,18 +643,18 @@
         <div class="grid-2">
             <div class="card contact-form">
                 <h3>Send Us A Message</h3>
-                <form onsubmit="event.preventDefault(); alert('Thank you! Your message has been submitted.');">
+                <form id="contactForm" onsubmit="submitContactForm(event)">
                     <label>Full Name</label>
-                    <input type="text" required placeholder="John Doe">
+                    <input type="text" name="name" id="contact_name" required placeholder="John Doe">
                     
                     <label>Email Address</label>
-                    <input type="email" required placeholder="john@example.com">
+                    <input type="email" name="_replyto" id="contact_email" required placeholder="john@example.com">
                     
                     <label>Phone Number</label>
-                    <input type="tel" placeholder="(816) 000-0000">
+                    <input type="tel" name="phone" id="contact_phone" placeholder="(816) 000-0000">
 
                     <label>Event Type</label>
-                    <select>
+                    <select name="event_type" id="contact_event_type">
                         <option>Birthday Party</option>
                         <option>Community / Festival</option>
                         <option>School / Library Event</option>
@@ -662,10 +662,11 @@
                     </select>
 
                     <label>Message / Date Request</label>
-                    <textarea rows="4" placeholder="Tell us about your event details..."></textarea>
+                    <textarea name="message" id="contact_message" rows="4" placeholder="Tell us about your event details..."></textarea>
                     
                     <button type="submit" class="btn-cta" style="margin-top: 1rem; width: 100%;">Submit Booking Request</button>
                 </form>
+                <p style="font-size:0.85rem; color:#64748B; margin-top:0.5rem;">Note: Admins must configure a Formspree endpoint (Manage → Configure Form Endpoint) to deliver messages to adventuremobilecade@gmail.com.</p>
             </div>
 
             <div class="card">
@@ -707,6 +708,7 @@
             <button class="btn-cta" onclick="setAdminPasscode()">Change Passcode</button>
             <button class="btn-cta" style="background-color: #64748B;" onclick="lockAdmin()">Lock Admin</button>
             <button class="btn-cta" style="background-color: #0ea5e9;" onclick="downloadVideosJson()">Download videos.json</button>
+            <button class="btn-cta" style="background-color: #06b6d4;" onclick="setFormEndpoint()">Configure Form Endpoint</button>
         </p>
 
         <div class="grid-3" style="margin-top: 2rem;">
@@ -933,6 +935,46 @@
             if (!/^\d{4}$/.test(newPass)) { alert('Passcode must be 4 digits.'); return; }
             localStorage.setItem('mobilecade_admin_passcode', newPass);
             alert('Admin passcode updated');
+        }
+
+        // Configure Formspree/Form endpoint for contact form (admin-only)
+        function setFormEndpoint() {
+            if (!isAdmin) { alert('Authenticate first'); return; }
+            const current = localStorage.getItem('mobile_form_endpoint') || '';
+            const url = prompt('Paste Formspree form endpoint (e.g. https://formspree.io/f/{id}) or form endpoint URL:', current);
+            if (!url) return;
+            localStorage.setItem('mobile_form_endpoint', url.trim());
+            alert('Form endpoint saved. Visitors will be able to submit the contact form once you verify the endpoint (Formspree may send a verification email).');
+        }
+
+        function submitContactForm(e) {
+            e.preventDefault();
+            const endpoint = localStorage.getItem('mobile_form_endpoint') || '';
+            if (!endpoint) { alert('Contact form not configured. Please have an admin configure a Formspree endpoint in the Manage panel.'); return; }
+
+            const form = document.getElementById('contactForm');
+            const fd = new FormData(form);
+
+            // Add a subject helpful for inbox filtering
+            fd.set('_subject', 'Website booking request');
+
+            fetch(endpoint, {
+                method: 'POST',
+                body: fd,
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(resp => {
+                if (resp.ok) {
+                    alert('Thanks — your request was sent. We will contact you soon.');
+                    form.reset();
+                } else {
+                    return resp.json().then(j => { throw j; });
+                }
+            })
+            .catch(err => {
+                console.error('Contact form send error', err);
+                alert('Failed to send request. Please try again or email adventuremobilecade@gmail.com directly.');
+            });
         }
 
         // System Configuration Map
