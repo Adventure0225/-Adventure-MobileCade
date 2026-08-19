@@ -1,7 +1,20 @@
 [
   {
-    "title": "Marketing Flyer",
+    "title": "Adventure Mobilecade Marketing Flyer Updated",
     "type": "local",
-    "url": "photos/adventure_mobilecade_marketing_flyer_updated.png"
+    "url": "photos/adventure_mobilecade_marketing_flyer_updated.png",
+    "thumbUrl": "photos/thumbs/adventure_mobilecade_marketing_flyer_updated-thumb.jpg"
+  },
+  {
+    "title": "Clipboard 2",
+    "type": "local",
+    "url": "photos/clipboard_2.png",
+    "thumbUrl": "photos/thumbs/clipboard_2-thumb.jpg"
+  },
+  {
+    "title": "Clipboard 1",
+    "type": "local",
+    "url": "photos/clipboard_1.png",
+    "thumbUrl": "photos/thumbs/clipboard_1-thumb.jpg"
   }
 ]
