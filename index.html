@@ -1212,12 +1212,15 @@
                 const card = document.createElement('div');
                 card.className = 'video-card';
 
-                // Only render local videos (YouTube embeds removed)
                 if (video.type !== 'local') return;
-                // Build an absolute URL so project pages (username.github.io/repo) resolve correctly
                 const basePath = window.location.origin + '/-Adventure-MobileCade/';
                 const srcUrl = (/^https?:\/\//i.test(video.url)) ? video.url : (basePath + video.url.replace(/^\/+/, ''));
-                let videoHTML = `<video src="${srcUrl}" controls></video>`;
+
+                // Use generated thumbnail as poster when available (data URL or repo path)
+                const poster = video.thumbDataUrl ? video.thumbDataUrl : (video.thumbUrl ? (basePath + video.thumbUrl.replace(/^\/+/, '')) : '');
+                const posterAttr = poster ? ` poster="${poster}"` : '';
+
+                const videoHTML = `<video src="${srcUrl}" controls${posterAttr} preload="metadata" style="width:100%; height:auto; border-radius:6px;"></video>`;
 
                 card.innerHTML = `
                     <div class="video-wrapper">
@@ -1232,29 +1235,66 @@
             });
         }
 
-        // Add New Video
+        // Add New Video (generate thumbnail from first frame)
         function addNewVideo(e) {
             e.preventDefault();
             const title = document.getElementById('newVideoTitle').value.trim();
             const fileInput = document.getElementById('newVideoFile');
-            let videoUrl = '';
+            if (!title) { alert('Please enter a title'); return; }
+            if (!fileInput || !fileInput.files || !fileInput.files[0]) { alert('Please select a local video file'); return; }
 
-            if (fileInput && fileInput.files && fileInput.files[0]) {
-                videoUrl = URL.createObjectURL(fileInput.files[0]);
-            } else {
-                alert('Please select a local video file to upload.');
-                return;
-            }
+            const file = fileInput.files[0];
+            const videoUrl = URL.createObjectURL(file);
 
-            videos.push({ title: title, type: 'local', url: videoUrl });
-            localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
+            // Generate thumbnail from video
+            const videoEl = document.createElement('video');
+            videoEl.preload = 'metadata';
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            videoEl.src = videoUrl;
 
-            document.getElementById('newVideoTitle').value = '';
-            document.getElementById('newVideoFile').value = '';
+            const grabThumbnail = () => {
+                try {
+                    const w = videoEl.videoWidth || 640;
+                    const h = videoEl.videoHeight || 360;
+                    const maxW = 480;
+                    const thumbW = Math.min(maxW, w);
+                    const thumbH = Math.round(thumbW * (h / w));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = thumbW;
+                    canvas.height = thumbH;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+                    const thumbDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                    videos.push({ title: title, type: 'local', url: videoUrl, fileName: file.name, thumbDataUrl: thumbDataUrl });
+                    localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
+                    document.getElementById('newVideoTitle').value = '';
+                    document.getElementById('newVideoFile').value = '';
+                    renderVideos();
+                    alert('Video added (local preview). Remember to download videos.json and commit with actual video files to publish for everyone.');
+                    showPage('videos');
+                } catch (err) {
+                    // Fallback if drawing fails
+                    videos.push({ title: title, type: 'local', url: videoUrl, fileName: file.name });
+                    localStorage.setItem('mobilecade_videos', JSON.stringify(videos));
+                    document.getElementById('newVideoTitle').value = '';
+                    document.getElementById('newVideoFile').value = '';
+                    renderVideos();
+                    alert('Video added (no thumbnail). Download videos.json and commit with actual video files to publish.');
+                    showPage('videos');
+                }
+            };
 
-            renderVideos();
-            alert('Video added successfully!');
-            showPage('videos');
+            // Seek to 1s (or 0 if shorter) to capture a frame
+            videoEl.addEventListener('loadeddata', function() {
+                try {
+                    const target = Math.min(1, Math.max(0, videoEl.duration / 2));
+                    videoEl.currentTime = target;
+                } catch (e) { grabThumbnail(); }
+            });
+            videoEl.addEventListener('seeked', grabThumbnail);
+            // Safety fallback: if metadata fails, wait a bit then try
+            setTimeout(() => { if (!videoEl.videoWidth) grabThumbnail(); }, 1500);
         }
 
         // Delete Video
@@ -1280,8 +1320,19 @@
                 if (!p || p.type !== 'local') return;
                 const card = document.createElement('div');
                 card.className = 'card';
+
+                // Determine display image: prefer thumbnail dataURL (admin preview), else repo path
+                let imgSrc = '';
+                if (p.thumbDataUrl) {
+                    imgSrc = p.thumbDataUrl;
+                } else if (p.url && /^blob:|^data:/.test(p.url)) {
+                    imgSrc = p.url;
+                } else if (p.url) {
+                    imgSrc = (window.location.origin + '/-Adventure-MobileCade/' + p.url).replace(/\/\/+/, '/').replace('https:/', 'https://');
+                }
+
                 card.innerHTML = `
-                    <img src="${(window.location.origin + '/-Adventure-MobileCade/' + p.url).replace(/\/\/+/, '/').replace('https:/', 'https://')}" alt="${p.title}" style="width:100%; height:auto; border-radius:6px;"/>
+                    <img src="${imgSrc}" alt="${p.title}" style="width:100%; height:auto; border-radius:6px;"/>
                     <h3 style="margin-top:0.75rem;">${p.title}</h3>
                     ${isAdmin ? `<button class="delete-btn-card admin-only" onclick="deletePhoto(${idx})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
                 `;
